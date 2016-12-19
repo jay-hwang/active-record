@@ -3,9 +3,9 @@ require 'attr_accessor_object'
 describe AttrAccessorObject do
   before(:all) do
     class TestAttrAccessorObject < AttrAccessorObject
+      my_attr_reader :a, :b
+      my_attr_writer :j, :k
       my_attr_accessor :x, :y
-      my_attr_writer :a
-      my_attr_reader :z
     end
   end
 
@@ -16,11 +16,27 @@ describe AttrAccessorObject do
   subject(:obj) { TestAttrAccessorObject.new }
 
   describe '#my_attr_reader' do
+    it 'defines getter methods' do
+      expect(obj).to respond_to(:a)
+      expect(obj).to respond_to(:b)
+    end
 
+    it 'does not define setter methods' do
+      expect { obj.a = '@a value' }.to raise_error(NoMethodError)
+      expect { obj.b = '@b value' }.to raise_error(NoMethodError)
+    end
   end
 
   describe '#my_attr_writer' do
+    it 'defines setter methods' do
+      expect(obj).to respond_to(:j=)
+      expect(obj).to respond_to(:k=)
+    end
 
+    it 'does not define getter methods' do
+      expect { obj.j }.to raise_error(NoMethodError)
+      expect { obj.k }.to raise_error(NoMethodError)
+    end
   end
 
   describe '#my_attr_accessor' do
