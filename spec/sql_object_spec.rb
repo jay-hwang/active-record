@@ -35,12 +35,12 @@ describe SQLObject do
 
     describe '::columns' do
       it 'returns a list of all column names as symbols' do
-        expect(Motorcycles.columns).to eq([:id, :name, :owner_id])
+        expect(Motorcycle.columns).to eq([:id, :name, :owner_id])
       end
 
       it 'only queries the database once' do
         expect(DBConnection).to(
-          receive(:execute).exactly(1).times.and_call_original
+          receive(:execute2).exactly(1).times.and_call_original
         )
 
         3.times { Motorcycle.columns }
@@ -48,7 +48,7 @@ describe SQLObject do
     end
 
     describe '#attributes' do
-      it 'returns @attributes hash by reference' do
+      it 'returns @attributes hash by ref' do
         motorcycle_attributes = { name: 'Suzuki GSXR 650' }
         m = Motorcycle.new
         m.instance_variable_set('@attributes', motorcycle_attributes)
@@ -113,31 +113,9 @@ describe SQLObject do
         m = Motorcycle.new
         m.name = 'Ninja ZX6R'
 
-        expect(m.instance_variables).to include(:attributes)
+        expect(m.instance_variables).to include(:@attributes)
         expect(m.instance_variables).not_to include(:@name)
-        expect(m.attributes[:name]).to eq 'Nick Diaz'
-      end
-    end
-
-    describe '#initialize' do
-      it 'calls appropriate setter method for each item in params hash' do
-        m = Motorcycle.allocate
-
-        expect(m).to receive(:id=).with(100)
-        expect(m).to receive(:name=).with('Ninja 300')
-        expect(m).to receive(:owner_id=).with(3)
-
-        m.send(:initialize, {
-          id: 100,
-          name: 'Ninja 300',
-          owner_id: 3
-        })
-      end
-
-      it 'throws an error when given an unknown attribute' do
-        expect do
-          Motorcycle.new(hello: 'world')
-        end.to raise_error "unknown attribute: 'hello'"
+        expect(m.attributes[:name]).to eq 'Ninja ZX6R'
       end
     end
 
@@ -167,6 +145,44 @@ describe SQLObject do
         motorcycles.each do |motorcycle|
           expect(motorcycle).to be_instance_of(Motorcycle)
         end
+      end
+    end
+
+    describe '#initialize' do
+      it 'calls appropriate setter method for each item in params hash' do
+        m = Motorcycle.allocate
+
+        expect(m).to receive(:id=).with(100)
+        expect(m).to receive(:name=).with('Ninja 300')
+        expect(m).to receive(:owner_id=).with(3)
+
+        m.send(:initialize, {
+          id: 100,
+          name: 'Ninja 300',
+          owner_id: 3
+        })
+      end
+
+      it 'throws an error when given an unknown attribute' do
+        expect do
+          Motorcycle.new(hello: 'world')
+        end.to raise_error "unknown attribute: 'hello'"
+      end
+    end
+
+    describe '#attribute_values' do
+      it 'returns array of values' do
+        m = Motorcycle.new(
+          id: 700,
+          name: 'CBR Repsol',
+          owner_id: 2
+        )
+
+        expect(m.attribute_values).to eq([
+          700,
+          'CBR Repsol',
+          2
+        ])
       end
     end
 
@@ -204,22 +220,6 @@ describe SQLObject do
       end
     end
 
-    describe '#attribute_values' do
-      it 'returns array of values' do
-        m = Motorcycle.new(
-          id: 700,
-          name: 'CBR Repsol',
-          owner_id: 2
-        )
-
-        expect(m.attribute_values).to eq([
-          700,
-          'CBR Repsol',
-          2
-        ])
-      end
-    end
-
     describe '#update' do
       it 'saves updated attributes to the DB' do
         h = Human.find(2)
@@ -234,7 +234,7 @@ describe SQLObject do
     end
 
     describe '#save' do
-      it 'calls #insert if instance does not already exist' do
+      it 'calls #insert if instance does not exist' do
         h = Human.new
         expect(h).to receive(:insert)
         h.save
@@ -247,5 +247,4 @@ describe SQLObject do
       end
     end
   end
-
 end
