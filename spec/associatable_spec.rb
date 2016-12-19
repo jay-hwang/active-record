@@ -50,7 +50,7 @@ describe 'AssocOptions' do
 
   describe 'AssocOptions' do
     before(:all) do
-      class Cat < SQLObject
+      class Motorcycle < SQLObject
         self.finalize!
       end
 
@@ -111,7 +111,7 @@ describe 'AssocOptions' do
         human = yamaha_r1.human
 
         expect(human).to be_instance_of(Human)
-        expet(human.fname).to eq('John')
+        expect(human.fname).to eq('John')
       end
 
       it 'fetches `house` from `Human`' do
@@ -141,20 +141,20 @@ describe 'AssocOptions' do
         expect(m).to be_instance_of(Motorcycle)
         expect(m.name).to eq('Suzuki Hayabusa')
       end
-    end
 
-    it 'fetches `humans` from `House`' do
-      expect(kelly_house).to respond_to(:humans)
-      humans = kelly_house.humans
+      it 'fetches `humans` from `House`' do
+        expect(kelly_house).to respond_to(:humans)
+        humans = kelly_house.humans
 
-      expect(humans.length).to eq(2)
-      expect(humans[0]).to be_instance_of(Human)
-      expect(humans[0].fname).to eq('John')
-    end
+        expect(humans.length).to eq(2)
+        expect(humans[0]).to be_instance_of(Human)
+        expect(humans[0].fname).to eq('John')
+      end
 
-    it 'returns an empty array if no assoc objects' do
-      motorcycleless_amber = Human.find(5)
-      expect(motorcycleless_amber.motorcycles).to eq([])
+      it 'returns an empty array if no assoc objects' do
+        motorcycleless_amber = Human.find(5)
+        expect(motorcycleless_amber.motorcycles).to eq([])
+      end
     end
 
     describe '::assoc_options' do
