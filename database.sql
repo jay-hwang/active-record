@@ -1,8 +1,10 @@
+DROP TABLE IF EXISTS houses;
 CREATE TABLE houses (
   id INTEGER PRIMARY KEY,
   address VARCHAR(255) NOT NULL
 );
 
+DROP TABLE IF EXISTS humans;
 CREATE TABLE humans (
   id INTEGER PRIMARY KEY,
   fname VARCHAR(255) NOT NULL,
@@ -12,6 +14,7 @@ CREATE TABLE humans (
   FOREIGN KEY(house_id) REFERENCES human(id)
 );
 
+DROP TABLE IF EXISTS motorcycles;
 CREATE TABLE motorcycles (
   id INTEGER PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
@@ -41,5 +44,5 @@ VALUES
   (1, 'Yamaha R1', 1),
   (2, 'Suzuki Hayabusa', 2),
   (3, 'Honda CBR600rr', 3),
-  (4, 'Harley Iron 883', 4),
-  (5, 'Honda Goldwing', 5);
+  (4, 'Harley Iron883', 4),
+  (5, 'Suzuki GSXR650', 2);
